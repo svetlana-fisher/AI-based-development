@@ -1,7 +1,7 @@
 # AI-based-development
 development of software products based on AI technologies
 
-## CV-1-22  
+## CV-1-22  (ROI_image_blurrer)
 
 Обработка Region of Interest (ROI) на изображении космонавта с применением Gaussian blur (блюр указанной части изображения)  
 
