@@ -21,6 +21,9 @@ development of software products based on AI technologies
 Затем активируйте виртуальное окружение  
 >source .venv/bin/activate
 
+Установите все необходимые зависимости  
+>uv pip install -r requirements.txt
+
 Запустите программу  
 >python3 CV-1-22.py
 

@@ -1,11 +1,13 @@
 import cv2
+import numpy as np
 import matplotlib.pyplot as plt
 from skimage import data
 from jsonargparse import CLI
-import numpy as np
+from pathlib import Path
 
 
 def gaussian_blur(
+    img_path: Path=None,
     h_start: int=100, 
     h_end: int=200,
     w_start: int=150, 
@@ -36,8 +38,16 @@ def gaussian_blur(
         - blurred_roi: blurred ROI region
 
     """
-
-    img = data.astronaut()
+    if img_path is None:
+        img = data.astronaut()
+    else:
+        if not img_path.exists():
+            raise FileNotFoundError(f"File '{img_path}' not found")
+        img = cv2.imread(str(img_path))
+        if img is None:
+            raise ValueError(f"Could not read image '{img_path}'. "
+                             f"Check the file format and its integrity.")
+    
     if h_start >= h_end or w_start >= w_end:
         raise ValueError("Invalid ROI coordinates: start must be less than end")
     if h_end > img.shape[0] or w_end > img.shape[1]:
@@ -107,11 +117,13 @@ def show_img(
     plt.show()
 
 def main(
+    img_path: Path=None,  
     h_start: int=100, 
     h_end: int=200,
     w_start: int=150, 
     w_end: int=250,
     kernel_size: int=15,
+    
 ):
     """
     Parameters
@@ -128,10 +140,19 @@ def main(
         Size of Gaussian kernel, by default 15
 
     """
-
-    img, blurred_img, roi, blurred_roi = gaussian_blur(h_start=h_start, h_end=h_end, w_start=w_start, w_end=w_end, kernel_size=kernel_size
-    )
-    show_img(img=img, roi=roi, blurred_img=blurred_img, blurred_roi=blurred_roi)
-
+    try:
+        img, blurred_img, roi, blurred_roi = gaussian_blur(
+            img_path=img_path, 
+            h_start=h_start, 
+            h_end=h_end, 
+            w_start=w_start, 
+            w_end=w_end, 
+            kernel_size=kernel_size
+        )
+        show_img(img=img, roi=roi, blurred_img=blurred_img, blurred_roi=blurred_roi)
+    except FileNotFoundError as e:
+        print(f"Error: {e}")
+    except ValueError as e:
+        print(f"Error: {e}")
 
 CLI(main)
